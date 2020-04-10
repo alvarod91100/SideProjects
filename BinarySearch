@@ -1,0 +1,40 @@
+
+import time
+
+
+arraySize= int(input("How large should the array be? Introduce the number of elements:  "))
+array1=[]
+
+#Prepare array for binary search sortig it by numerical order
+for i in range(0,arraySize):
+  arrayNew= int(input("Introduce a number to be put in the position " + str(i) +  " of the array:  "))
+  array1.append(arrayNew)
+  array1.sort()
+
+
+
+def binary_search(array,value):
+	init = 0
+	end = len(array)-1
+	found = False
+
+	while( init<=end and found == False):
+		mid = (init + end)//2
+    
+		if array[mid] == value :
+			found = True
+
+		else:
+			if value < array[mid]:
+				end = mid - 1
+			else:
+				init = mid + 1	
+
+	return found
+	
+
+searchedValue= int(input("Introduce the number you want to check of it's present in the array:  "))
+start_time = time.time()
+
+print(binary_search(array1, searchedValue))
+print("--- %s seconds ---" % (time.time() - start_time))
