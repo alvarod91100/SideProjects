@@ -1,0 +1,296 @@
+```{r}
+hospital_data= read.csv("hospital-data.csv")
+outcome <- read.csv("outcome-of-care-measures.csv", colClasses = "character")
+head(outcome)
+```
+
+30 DAYS death rates of HA
+```{r}
+outcome[,11] = as.numeric(outcome[,11])
+hist(outcome[,11])
+```
+
+Ploting the best hospital in a state
+```{r}
+best<- function(state, condition){
+    index= c()
+    hospitals=c()
+
+    if (condition== "heart attack"){
+            desease_by_state= split(outcome$Hospital.30.Day.Death..Mortality..Rates.from.Heart.Attack, outcome$State)
+            desease_in_state= as.numeric(unlist(desease_by_state[state]))
+            desease_na= is.na(desease_in_state)
+
+            hospital_by_state= split(outcome$Hospital.Name, outcome$State)
+            hospital_in_state= unlist(hospital_by_state[state], use.names = FALSE)
+            
+            hospital_in_state= hospital_in_state[!desease_na]
+            desease_in_state= desease_in_state[!desease_na]
+            value_searched=min(desease_in_state)
+            index= which(desease_in_state %in% value_searched)
+            hospitals= c(hospitals, hospital_in_state[index])
+            
+        }
+    
+    
+        if (condition== "heart failure"){
+            desease_by_state= split(outcome$Hospital.30.Day.Death..Mortality..Rates.from.Heart.Failure, outcome$State)
+            desease_in_state= as.numeric(unlist(desease_by_state[state]))
+            desease_na= is.na(desease_in_state)
+
+            hospital_by_state= split(outcome$Hospital.Name, outcome$State)
+            hospital_in_state= unlist(hospital_by_state[state], use.names = FALSE)
+            
+            hospital_in_state= hospital_in_state[!desease_na]
+            desease_in_state= desease_in_state[!desease_na]
+            
+            value_searched=min(desease_in_state)
+            index= which(desease_in_state %in% value_searched)
+            hospitals= c(hospitals, hospital_in_state[index])
+            
+        }
+        
+    
+        if (condition=="pneumonia"){
+            desease_by_state= split(outcome$Hospital.30.Day.Death..Mortality..Rates.from.Pneumonia, outcome$State)
+            desease_in_state= as.numeric(unlist(desease_by_state[state]))
+            desease_na= is.na(desease_in_state)
+
+            hospital_by_state= split(outcome$Hospital.Name, outcome$State)
+            hospital_in_state= unlist(hospital_by_state[state], use.names = FALSE)
+            
+            hospital_in_state= hospital_in_state[!desease_na]
+            desease_in_state= desease_in_state[!desease_na]
+            
+            value_searched= min(desease_in_state)
+            index= which(desease_in_state %in% value_searched)
+            hospitals= c(hospitals, hospital_in_state[index])
+            
+            
+        }
+        return(hospitals)
+    }
+```
+
+
+
+
+
+
+
+
+
+```{r}
+rankhospital<- function(state, condition, g){
+hospitals=c()
+
+
+if(g  == "worst"){
+        if (condition== "heart attack"){
+            desease_by_state= split(outcome$Hospital.30.Day.Death..Mortality..Rates.from.Heart.Attack, outcome$State)
+            desease_in_state= as.numeric(unlist(desease_by_state[state]))
+            desease_na= is.na(desease_in_state)
+
+            hospital_by_state= split(outcome$Hospital.Name, outcome$State)
+            hospital_in_state= unlist(hospital_by_state[state], use.names = FALSE)
+            
+            hospital_in_state= hospital_in_state[!desease_na]
+            desease_in_state= desease_in_state[!desease_na]
+            value_searched=max(desease_in_state)
+
+            index= which(desease_in_state %in% value_searched)
+            hospitals= c(hospitals, hospital_in_state[index])
+            
+        }
+    
+    
+        if (condition== "heart failure"){
+            desease_by_state= split(outcome$Hospital.30.Day.Death..Mortality..Rates.from.Heart.Failure, outcome$State)
+            desease_in_state= as.numeric(unlist(desease_by_state[state]))
+            desease_na= is.na(desease_in_state)
+
+            hospital_by_state= split(outcome$Hospital.Name, outcome$State)
+            hospital_in_state= unlist(hospital_by_state[state], use.names = FALSE)
+            
+            hospital_in_state= hospital_in_state[!desease_na]
+            desease_in_state= desease_in_state[!desease_na]
+            
+            value_searched=max(desease_in_state)
+
+            index= which(desease_in_state %in% value_searched)
+            hospitals= c(hospitals, hospital_in_state[index])
+            
+        }
+        
+    
+        if (condition=="pneumonia"){
+            desease_by_state= split(outcome$Hospital.30.Day.Death..Mortality..Rates.from.Pneumonia, outcome$State)
+            desease_in_state= as.numeric(unlist(desease_by_state[state]))
+            desease_na= is.na(desease_in_state)
+
+            hospital_by_state= split(outcome$Hospital.Name, outcome$State)
+            hospital_in_state= unlist(hospital_by_state[state], use.names = FALSE)
+            
+            hospital_in_state= hospital_in_state[!desease_na]
+            desease_in_state= desease_in_state[!desease_na]
+            
+            value_searched= max(desease_in_state)
+            index= which(desease_in_state %in% value_searched)
+            hospitals= c(hospitals, hospital_in_state[index])
+            
+            
+        }
+    
+}
+
+
+
+
+if(typeof(g)  == "double"){
+        
+        if (condition== "heart attack"){
+            desease_by_state= split(outcome$Hospital.30.Day.Death..Mortality..Rates.from.Heart.Attack, outcome$State)
+            desease_in_state= as.numeric(unlist(desease_by_state[state]))
+            desease_na= is.na(desease_in_state)
+
+            hospital_by_state= split(outcome$Hospital.Name, outcome$State)
+            hospital_in_state= unlist(hospital_by_state[state], use.names = FALSE)
+            
+            hospital_in_state= hospital_in_state[!desease_na]
+            desease_in_state= desease_in_state[!desease_na]
+            
+            sorted_desease= sort(desease_in_state)
+            value_searched=sorted_desease[g]
+
+            index= which(desease_in_state %in% value_searched)
+            hospitals= c(hospitals, hospital_in_state[index])
+            
+        }
+    
+    
+        if (condition== "heart failure"){
+            desease_by_state= split(outcome$Hospital.30.Day.Death..Mortality..Rates.from.Heart.Failure, outcome$State)
+            desease_in_state= as.numeric(unlist(desease_by_state[state]))
+            desease_na= is.na(desease_in_state)
+
+            hospital_by_state= split(outcome$Hospital.Name, outcome$State)
+            hospital_in_state= unlist(hospital_by_state[state], use.names = FALSE)
+            
+            hospital_in_state= hospital_in_state[!desease_na]
+            desease_in_state= desease_in_state[!desease_na]
+            
+            sorted_desease= sort(desease_in_state)
+            value_searched=sorted_desease[g]
+
+            index= which(desease_in_state %in% value_searched)
+            hospitals= c(hospitals, hospital_in_state[index])
+            
+        }
+        
+    
+        if (condition=="pneumonia"){
+            desease_by_state= split(outcome$Hospital.30.Day.Death..Mortality..Rates.from.Pneumonia, outcome$State)
+            desease_in_state= as.numeric(unlist(desease_by_state[state]))
+            desease_na= is.na(desease_in_state)
+
+            hospital_by_state= split(outcome$Hospital.Name, outcome$State)
+            hospital_in_state= unlist(hospital_by_state[state], use.names = FALSE)
+            
+            hospital_in_state= hospital_in_state[!desease_na]
+            desease_in_state= desease_in_state[!desease_na]
+            
+            sorted_desease= sort(desease_in_state)
+            value_searched=sorted_desease[g]
+
+            index= which(desease_in_state %in% value_searched)
+            hospitals= c(hospitals, hospital_in_state[index])
+            
+            
+        }
+    
+}
+    return(hospitals)
+
+}
+```
+
+
+```{r}
+#rankall <- function(condition, num = "best") {
+
+condition="heart attack"
+num="worst"
+
+
+top_hospitals=c()
+top_states=c()
+list_to_dataframe= list(Hospital=c(), State= c())
+        
+hospital_data= read.csv("hospital-data.csv")
+outcome <- read.csv("outcome-of-care-measures.csv", colClasses = "character")
+hospital_by_state= split(outcome$Hospital.Name, outcome$State)
+#hospitals_vector_to_list=c()
+#states_vector_to_list=c()
+
+
+if (condition == "heart attack"){
+    disease_by_state= split(outcome$Hospital.30.Day.Death..Mortality..Rates.from.Heart.Attack, outcome$State)
+}
+    
+if (condition == "heart failure"){
+    disease_by_state= split(outcome$Hospital.30.Day.Death..Mortality..Rates.from.Heart.Failure, outcome$State)
+}    
+
+if (condition ==  "pneumonia"){
+    disease_by_state= split(outcome$Hospital.30.Day.Death..Mortality..Rates.from.Pneumonia, outcome$State)
+}
+    
+    for (i in 1:length(hospital_by_state)){
+        #aqui dentro viene casi todo hasta que se agrega a top hospitliales y top states
+        
+        disease_in_state= as.numeric(unlist(disease_by_state[i]))
+        disease_na= is.na(disease_in_state)
+        
+        hospital_in_state= unlist(hospital_by_state[i], use.names = FALSE)
+        
+        hospital_in_state= hospital_in_state[!disease_na]
+        disease_in_state= disease_in_state[!disease_na]
+        
+        if (num == "best"){
+            value_searched= min(disease_in_state)
+        }
+        
+        if (num == "worst"){
+            value_searched= max(disease_in_state)
+        }
+         
+        index_of_found= which(disease_in_state %in% value_searched)
+        
+        hospital_name= hospital_in_state[index_of_found]
+        #hospitals_vector_to_list=c(hospitals_vector_to_list, hospital_name)
+        
+        if(length(hospital_name)>1){
+            hospital_name=sort(hospital_name)
+            hospital_name=hospital_name[1]
+            }
+        
+        list_to_dataframe$Hospital= c(list_to_dataframe$Hospital, hospital_name)
+        list_to_dataframe$State= c(list_to_dataframe$State, names(hospital_by_state)[i])   #no se si asi sea correcto escribirlo
+        
+    }
+    
+
+
+r = as.data.frame(list_to_dataframe)
+
+
+
+
+#}
+
+```
+
+
+> list_to_dataframe= list(hospital=c("hosp1", "hosp2"), state=c("Hi", "Hello"))
+> list_to_dataframe$hospital= c(list_to_dataframe$hospital, "hosp3")
+> as.data.frame(list_to_dataframe)
